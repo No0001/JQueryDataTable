@@ -1,0 +1,110 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+@section css
+    {
+    <link href="~/Content/DataTable/datatables.min.css" rel="stylesheet" />
+}
+
+
+<table id="resultTable" class="display" style="width:100%">
+    <thead>
+        <tr>
+            <th>test1</th>
+            <th>test2</th>
+            <th>test3</th>
+        </tr>
+    </thead>
+</table>
+
+@Html.TextBox("test1")
+@Html.TextBox("test2")
+
+
+<button type="button" onclick="Add()">增加一列</button>
+<button type="button" onclick="SearchTable()">查詢table</button>
+@section scripts{
+
+
+    <script src="~/MyScripts/dataTables_lang/zhTW.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script src="~/MyScripts/DataTableFactory.js"></script>
+
+
+
+    <script>
+
+        $(function () {
+            resultTableFactory.Init();
+        });
+
+        var dataTable = $.DataTableFactory();
+
+        dataTable.resultTable = function () {
+            this.columnDefs = [
+                { targets: 0 },
+                { targets: 1 },
+                {
+                    targets: 2, render: function (data, type, row) {
+
+                        var edit = '<button type="button" onclick="Update(this)">編輯</button>';
+                        var remove = '<button type="button" onclick="Remove(this)">移除</button>';
+
+                        if (typeof (data) != "undefined")
+                        {
+                            return data;
+                        }
+                        return edit + remove;
+                    },},
+            ];
+
+            this.UpdateColumnDefs = [
+                { targets: 0 },
+                { targets: 1 },
+                {
+                    targets: 2, render: function (data, type, row) {
+
+                     var saveBtn = '<button type="button" onclick="Save(this)">確定</button>';
+                     var cancel = '<button type="button" onclick="Cancel(this)">取消</button>';
+
+                        if (typeof (data) != "undefined") {
+                            return data;
+                        }
+                        return saveBtn + cancel;
+                    },
+                },
+            ];
+        };
+
+        var resultTableFactory = dataTable.factory("resultTable");
+
+    </script>
+
+    <script>
+        function Add() {
+            var arr = [$("#test1").val(), $("#test2").val()]
+
+            resultTableFactory.add(arr);
+        }
+        function Remove(btn) {
+            resultTableFactory.remove(btn);
+        }
+        function Update(btn) {
+            resultTableFactory.openEdit(btn);
+        }
+        function Cancel(btn) {
+            resultTableFactory.cancelEdit();
+        }
+        function Save(btn) {
+            resultTableFactory.saveUpdateData();
+        }
+        function SearchTable() {
+            var arr = resultTableFactory.getAllDataNotInvalidate();
+            alert(arr.toString())
+        }
+    </script>
+
+
+
+
+}
