@@ -16,7 +16,15 @@
         </tr>
     </thead>
 </table>
-
+<table id="searchTable" class="display" style="width:100%">
+    <thead>
+        <tr>
+            <th>test1</th>
+            <th>test2</th>
+         
+        </tr>
+    </thead>
+</table>
 @Html.TextBox("test1")
 @Html.TextBox("test2")
 
@@ -36,9 +44,41 @@
 
         $(function () {
             resultTableFactory.Init();
+            searchTableFactory.Init();
         });
 
         var dataTable = $.DataTableFactory();
+        var searchTable2 = $.DataTableFactory();
+
+        searchTable2.searchTable = function () {
+
+            var ajax = {
+                url: '@Url.Action("AjaxGetList", "Home")',
+                type: 'POST',
+                data: function (d) {
+            
+
+                    var obj = {
+                        keyword: 'test',
+                        keyword2: '2',
+
+                    };
+                    return obj;
+
+                }
+            };
+
+            this.columns = [
+                { data: "id", className: "all"},
+                { data: "Name", className: "all"},            
+            ];
+
+            this.elem = $("#searchTable");
+            this.info = true;
+            this.ajax = ajax;
+            this.paging = false;
+
+        };
 
         dataTable.resultTable = function () {
             this.columnDefs = [
@@ -75,7 +115,7 @@
                 },
             ];
         };
-
+        var searchTableFactory = searchTable2.factory("searchTable");
         var resultTableFactory = dataTable.factory("resultTable");
 
     </script>

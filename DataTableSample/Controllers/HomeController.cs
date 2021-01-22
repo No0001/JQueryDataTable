@@ -26,5 +26,22 @@ namespace DataTableSample.Controllers
 
             return View();
         }
+
+        public ActionResult AjaxGetList(string keyword, int keyword2)
+        {
+            var datas = new List<object>();
+
+            for (int i = 0; i < 20; i++)
+            {
+                datas.Add(new { id = i.ToString() , Name = "test"});
+            }
+            return Json(new
+            {
+                data = datas,
+                IsSuccess = true,
+
+            }, JsonRequestBehavior.AllowGet);
+        }
+
     }
 }
